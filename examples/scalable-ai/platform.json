@@ -1,0 +1,23 @@
+{
+  "gateway": {
+    "host": "127.0.0.1",
+    "port": 8080,
+    "token_env": "DEMO_API_TOKEN"
+  },
+  "workloads": [
+    {
+      "name": "triage",
+      "kind": "triage",
+      "host": "127.0.0.1",
+      "port": 8101,
+      "route": "/triage"
+    },
+    {
+      "name": "summary",
+      "kind": "summary",
+      "host": "127.0.0.1",
+      "port": 8102,
+      "route": "/summary"
+    }
+  ]
+}
