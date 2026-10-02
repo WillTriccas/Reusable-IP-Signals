@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101a2a">
+    <title>Agent Control Plane</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Agent Control Plane home">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span>Control plane</span>
+      </a>
+      <div class="environment-label"><span class="status-dot"></span> Demo environment</div>
+    </header>
+
+    <main class="page">
+      <section class="intro">
+        <div>
+          <p class="eyebrow">OPERATIONS / AGENTS</p>
+          <h1>Agent inventory</h1>
+          <p class="subtitle">Monitor runtime health, review policy posture, and manage agent lifecycle.</p>
+        </div>
+        <div class="updated"><span class="status-dot"></span> Synthetic sample data</div>
+      </section>
+
+      <section class="summary" aria-label="Inventory summary">
+        <article class="summary-card">
+          <span class="summary-label">Total agents</span>
+          <strong id="total-count">—</strong>
+          <span class="summary-note">Across connected environments</span>
+        </article>
+        <article class="summary-card">
+          <span class="summary-label">Enabled</span>
+          <strong id="enabled-count">—</strong>
+          <span class="summary-note">Currently permitted to run</span>
+        </article>
+        <article class="summary-card">
+          <span class="summary-label">Needs attention</span>
+          <strong id="attention-count">—</strong>
+          <span class="summary-note">Health or policy follow-up</span>
+        </article>
+      </section>
+
+      <section class="inventory-panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Registered agents</h2>
+            <p>Lifecycle operations are checked against policy approval.</p>
+          </div>
+          <span id="inventory-count" class="count-pill">— agents</span>
+        </div>
+        <p id="notice" class="notice" role="status" aria-live="polite"></p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Agent</th>
+                <th scope="col">Runtime health</th>
+                <th scope="col">Policy</th>
+                <th scope="col">Environment</th>
+                <th scope="col">Lifecycle</th>
+                <th scope="col"><span class="visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody id="agent-rows"></tbody>
+          </table>
+        </div>
+        <p class="data-note">Sample inventory contains synthetic data. Changes reset when the demo is restarted.</p>
+      </section>
+    </main>
+    <footer>Reusable Agent Control Plane <span>Prototype · Not for production use</span></footer>
+  </body>
+</html>
