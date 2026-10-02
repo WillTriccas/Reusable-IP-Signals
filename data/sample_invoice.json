@@ -1,0 +1,15 @@
+{
+  "invoice": {
+    "invoice_id": "INV-SYN-001",
+    "supplier_id": "SUP-SYN-017",
+    "amount": "1250.00",
+    "currency": "USD",
+    "purchase_order_id": "PO-SYN-042"
+  },
+  "purchase_order": {
+    "purchase_order_id": "PO-SYN-042",
+    "supplier_id": "SUP-SYN-017",
+    "amount": "1250.00",
+    "currency": "USD"
+  }
+}
