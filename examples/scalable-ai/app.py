@@ -136,9 +136,7 @@ class GatewayHandler(BaseHTTPRequestHandler):
         self._proxy()
 
     def _proxy(self):
-        request_id = self.headers.get("X-Request-Id", "")
-        if not re.fullmatch(r"[A-Za-z0-9._-]{1,100}", request_id):
-            request_id = str(uuid.uuid4())
+        request_id = str(uuid.uuid4())
         supplied = self.headers.get("Authorization", "")
         expected = "Bearer " + self.server.api_token
         if not hmac.compare_digest(supplied, expected):

@@ -7,6 +7,7 @@ import sys
 import tempfile
 import time
 import unittest
+import uuid
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -106,7 +107,9 @@ class LocalDeploymentTests(unittest.TestCase):
             },
         )
         with urllib.request.urlopen(request, timeout=3) as response:
-            self.assertEqual(response.headers["X-Request-Id"], "test-request")
+            request_id = response.headers["X-Request-Id"]
+            self.assertNotEqual(request_id, "test-request")
+            self.assertEqual(str(uuid.UUID(request_id)), request_id)
             self.assertEqual(json.load(response), expected)
 
 
