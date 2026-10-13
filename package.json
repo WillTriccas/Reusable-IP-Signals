@@ -1,0 +1,14 @@
+{
+  "name": "regulated-ai-controls-accelerator",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Synthetic, customer-neutral assessment and compensating-control patterns for regulated AI adoption.",
+  "scripts": {
+    "start": "node src/cli.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

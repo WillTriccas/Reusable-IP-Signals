@@ -1,0 +1,52 @@
+{
+  "id": "synthetic-assistant-01",
+  "name": "Synthetic internal research assistant",
+  "dataClassification": ["synthetic-public"],
+  "policy": {
+    "externalSharing": true,
+    "providerTraining": true
+  },
+  "owner": {
+    "id": "synthetic-owner-a",
+    "expiresAt": "2026-01-01T00:00:00Z"
+  },
+  "attestation": null,
+  "accessReview": {
+    "reviewedAt": "2025-01-01T00:00:00Z",
+    "members": [
+      { "principal": "synthetic-reviewer", "decision": "retain" },
+      { "principal": "synthetic-contractor", "decision": "revoke" }
+    ]
+  },
+  "exception": {
+    "status": "pending",
+    "controlId": "data-retention",
+    "rationale": "A synthetic test dataset needs a short-lived retention window.",
+    "requestedBy": "synthetic-platform-team",
+    "expiresAt": "2026-12-31T00:00:00Z"
+  },
+  "workflow": {
+    "ownershipAcceptance": {
+      "ownerId": "synthetic-owner-b",
+      "expiresAt": "2027-10-13T00:00:00Z"
+    },
+    "attestation": {
+      "reviewer": "synthetic-governance-reviewer",
+      "statement": "Synthetic capability reviewed against the published use policy.",
+      "attestedAt": "2026-10-13T00:00:00Z"
+    },
+    "exceptionApproval": {
+      "approvedBy": "synthetic-risk-reviewer",
+      "approvalRationale": "Approved only for the synthetic dataset and stated time window.",
+      "approvedAt": "2026-10-13T00:00:00Z"
+    },
+    "accessReview": {
+      "reviewer": "synthetic-access-reviewer",
+      "reviewedAt": "2026-10-13T00:00:00Z",
+      "members": [
+        { "principal": "synthetic-reviewer", "decision": "retain" },
+        { "principal": "synthetic-contractor", "decision": "revoke" }
+      ]
+    }
+  }
+}
