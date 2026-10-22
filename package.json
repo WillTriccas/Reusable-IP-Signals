@@ -1,0 +1,15 @@
+{
+  "name": "multi-cloud-data-integration-accelerator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Customer-neutral proof of value for governed cross-platform data integration",
+  "type": "module",
+  "scripts": {
+    "start": "node src/cli.js run",
+    "query": "node src/cli.js query",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

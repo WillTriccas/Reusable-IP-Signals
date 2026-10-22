@@ -1,0 +1,16 @@
+[
+  {
+    "project_ref": "project-demo-301",
+    "billing_date": "2026-01-01",
+    "cost_type": "cloudCost",
+    "amount": 125.5,
+    "market": "north-america"
+  },
+  {
+    "project_ref": "project-demo-402",
+    "billing_date": "2026-01-02",
+    "cost_type": "cloudCost",
+    "amount": 88.25,
+    "market": "europe-middle-east-africa"
+  }
+]
