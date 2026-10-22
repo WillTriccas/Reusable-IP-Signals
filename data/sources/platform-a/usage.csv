@@ -1,0 +1,4 @@
+workspace_id,observed_on,measure,units,region
+ws-demo-101,2026-01-01,activeUsers,42,na
+ws-demo-202,2026-01-01,activeUsers,27,emea
+ws-demo-101,2026-01-02,activeUsers,45,na

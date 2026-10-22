@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "name": "platform-a-usage",
+      "adapter": "csv",
+      "path": "../data/sources/platform-a/usage.csv",
+      "fields": {
+        "entityId": "workspace_id",
+        "date": "observed_on",
+        "metric": "measure",
+        "value": "units",
+        "region": "region"
+      },
+      "valueMultiplier": 1
+    },
+    {
+      "name": "platform-b-costs",
+      "adapter": "json",
+      "path": "../data/sources/platform-b/costs.json",
+      "fields": {
+        "entityId": "project_ref",
+        "date": "billing_date",
+        "metric": "cost_type",
+        "value": "amount",
+        "region": "market"
+      },
+      "valueMultiplier": 1
+    }
+  ],
+  "transformations": {
+    "metricAliases": {
+      "activeUsers": "active_users",
+      "cloudCost": "cloud_spend"
+    },
+    "regionAliases": {
+      "na": "NA",
+      "north-america": "NA",
+      "emea": "EMEA",
+      "europe-middle-east-africa": "EMEA"
+    }
+  },
+  "quality": {
+    "isoDateOnly": true,
+    "nonNegativeValues": true
+  },
+  "store": {
+    "path": "../build/warehouse"
+  },
+  "access": {
+    "roles": {
+      "analyst": ["analytics"],
+      "data-steward": ["analytics", "curated", "lineage", "quality"]
+    }
+  }
+}
