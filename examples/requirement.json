@@ -1,0 +1,17 @@
+{
+  "slug": "sample-catalog",
+  "title": "Sample catalog service",
+  "summary": "Offer a small, read-only catalog endpoint for a synthetic demo.",
+  "capabilities": [
+    {
+      "name": "Service health",
+      "outcome": "Operators can check whether the service is running.",
+      "acceptance_criteria": ["GET /health returns HTTP 200 and a JSON status."]
+    },
+    {
+      "name": "Catalog description",
+      "outcome": "Visitors can identify the sample service.",
+      "acceptance_criteria": ["GET / returns the service name in JSON."]
+    }
+  ]
+}

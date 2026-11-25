@@ -1,0 +1,16 @@
+name: Prepare __SERVICE_SLUG__ deployment
+on:
+  workflow_dispatch:
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check deployment manifest
+        run: |
+          test -f deploy/deployment.yaml
+          grep -Eq '^[[:space:]]+image: [^[:space:]]+@sha256:[0-9a-f]{64}$' deploy/deployment.yaml
+          echo 'Immutable image reference found. Review approvals and environment policy before integrating a deployment action.'
