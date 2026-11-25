@@ -19,6 +19,13 @@ STAGES = {
     "verify": "verified",
     "prepare": "prepared",
 }
+STAGE_ARTIFACTS = {
+    "planned": {"requirement.json", "backlog.json"},
+    "implemented": {"requirement.json", "backlog.json", "app.py", "tests/test_app.py", "Dockerfile"},
+    "verified": {"requirement.json", "backlog.json", "app.py", "tests/test_app.py", "Dockerfile", "review.json"},
+    "prepared": {"requirement.json", "backlog.json", "app.py", "tests/test_app.py", "Dockerfile",
+                 "review.json", "deploy/deployment.yaml", "deploy/workflow.yml"},
+}
 
 
 def save(path, data):
@@ -100,6 +107,16 @@ def tracked(output, state, relative_paths):
 
 
 def integrity(output, state):
+    require(isinstance(state.get("artifacts"), dict) and
+            set(state["artifacts"]) == STAGE_ARTIFACTS[state["stage"]], "artifacts do not match stage")
+    approvals = state.get("approvals")
+    require(isinstance(approvals, list) and all(isinstance(item, str) for item in approvals) and
+            len(approvals) == len(set(approvals)) and
+            set(approvals) <= {"plan", "implementation", "deployment"}, "invalid approvals")
+    require(("plan" in approvals or state["stage"] == "planned") and
+            ("implementation" in approvals or state["stage"] != "prepared") and
+            ("implementation" not in approvals or state["stage"] in ("verified", "prepared")) and
+            ("deployment" not in approvals or state["stage"] == "prepared"), "approvals do not match stage")
     for relative, expected in state["artifacts"].items():
         path = output / relative
         require(path.is_file() and not path.is_symlink() and digest(path) == expected, f"artifact changed: {relative}")

@@ -54,6 +54,15 @@ class FactoryTests(unittest.TestCase):
         (self.output / "backlog.json").write_text("{}")
         self.assertIn("artifact changed", self.command("implement", succeeds=False).stderr)
 
+    def test_rejects_claimed_stage_without_artifacts(self):
+        self.command("plan", SAMPLE)
+        state_path = self.output / "state.json"
+        state = json.loads(state_path.read_text())
+        state["stage"] = "prepared"
+        state["approvals"] = ["plan", "implementation", "deployment"]
+        state_path.write_text(json.dumps(state))
+        self.assertIn("artifacts do not match stage", self.command("status", succeeds=False).stderr)
+
     def test_rejects_untrusted_slug_and_existing_output(self):
         source = Path(self.temp.name) / "invalid.json"
         data = json.loads(SAMPLE.read_text())

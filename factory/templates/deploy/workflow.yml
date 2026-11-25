@@ -12,5 +12,5 @@ jobs:
       - name: Check deployment manifest
         run: |
           test -f deploy/deployment.yaml
-          grep -q 'reviewed-tag' deploy/deployment.yaml
-          echo 'Review image digest, approvals, and environment policy before integrating a deployment action.'
+          grep -Eq '^[[:space:]]+image: [^[:space:]]+@sha256:[0-9a-f]{64}$' deploy/deployment.yaml
+          echo 'Immutable image reference found. Review approvals and environment policy before integrating a deployment action.'
