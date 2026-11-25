@@ -28,6 +28,14 @@ def _module(path):
     return ".".join(path.with_suffix("").parts).removesuffix(".__init__")
 
 
+def _functions(nodes, prefix=""):
+    for node in nodes:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            yield prefix + node.name, node
+        elif isinstance(node, ast.ClassDef):
+            yield from _functions(node.body, prefix + node.name + ".")
+
+
 def analyze(source):
     """Return a deterministic, evidence-linked assessment of Python source."""
     source = Path(source).resolve()
@@ -61,12 +69,17 @@ def analyze(source):
         for node in tree.body:
             if isinstance(node, ast.Import):
                 for alias in node.names:
-                    aliases[alias.asname or alias.name.split(".")[0]] = alias.name
+                    aliases[alias.asname or alias.name.split(".")[0]] = (
+                        alias.name if alias.asname else alias.name.split(".")[0]
+                    )
                     imports.append((alias.name, node.lineno))
             elif isinstance(node, ast.ImportFrom):
                 base = node.module or ""
                 if node.level:
-                    base = ".".join(filter(None, [module.rpartition(".")[0], base]))
+                    package = module if path.endswith("__init__.py") else module.rpartition(".")[0]
+                    parts = package.split(".") if package else []
+                    parent = ".".join(parts[:len(parts) - node.level + 1]) if node.level <= len(parts) else ""
+                    base = ".".join(filter(None, [parent, base]))
                 for alias in node.names:
                     aliases[alias.asname or alias.name] = ".".join(filter(None, [base, alias.name]))
                 imports.append((base, node.lineno))
@@ -77,10 +90,11 @@ def analyze(source):
                     "evidence": _evidence(path, line),
                 })
 
-        functions = [node for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))]
-        local_names = {node.name for node in functions}
+        functions = list(_functions(tree.body))
+        local_names = {name for name, _ in functions if "." not in name}
+        method_names = {name for name, _ in functions}
         signals = []
-        for function in functions:
+        for qualified_name, function in functions:
             observed = set()
             for call in _calls(function):
                 target = _name(call.func)
@@ -90,9 +104,13 @@ def analyze(source):
                 resolved = aliases.get(head, head) + (f".{tail}" if tail else "")
                 if head in local_names:
                     resolved = f"{module}.{target}"
-                if resolved.rpartition(".")[0] in modules or (head in local_names):
+                elif head in {"self", "cls"} and "." in qualified_name:
+                    candidate = f"{qualified_name.rpartition('.')[0]}.{tail}"
+                    if candidate in method_names:
+                        resolved = f"{module}.{candidate}"
+                if resolved.rpartition(".")[0] in modules or resolved.startswith(f"{module}."):
                     dependencies.append({
-                        "from": f"{module}.{function.name}", "to": resolved, "kind": "call",
+                        "from": f"{module}.{qualified_name}", "to": resolved, "kind": "call",
                         "evidence": _evidence(path, call.lineno),
                     })
                 if target.endswith(".execute") and call.args:
@@ -122,7 +140,7 @@ def analyze(source):
                 ):
                     signals.append(("Broad exception handling may hide failures", node.lineno, "medium"))
             behaviors.append({
-                "function": f"{module}.{function.name}",
+                "function": f"{module}.{qualified_name}",
                 "inferred_behavior": function.name.replace("_", " "),
                 "observed_operations": sorted(observed) or ["internal computation or orchestration"],
                 "evidence": _evidence(path, function.lineno),
@@ -150,7 +168,7 @@ def analyze(source):
             treatment, reason = "retain", "No migration driver was detected by these static rules"
         evidence = ([risk["evidence"] for risk in own_risks] or
                     [dep["evidence"] for dep in external_deps] or
-                    [_evidence(path, functions[0].lineno if functions else 1)])
+                    [_evidence(path, functions[0][1].lineno if functions else 1)])
         treatments.append({
             "module": module, "path": treatment, "reason": reason, "evidence": sorted(set(evidence)),
         })

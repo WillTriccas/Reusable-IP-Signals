@@ -76,6 +76,62 @@ class AnalysisTests(unittest.TestCase):
         self.assertEqual(result["treatments"][0]["path"], "rehost")
         self.assertEqual(result["treatments"][0]["evidence"], ["adapter.py:1"])
 
+    def test_class_methods_are_assessed_and_linked(self):
+        with tempfile.TemporaryDirectory() as directory:
+            (Path(directory) / "service.py").write_text(
+                "class Service:\n"
+                "    def run(self, db, value):\n"
+                "        self.audit()\n"
+                "        db.execute('SELECT * FROM t WHERE id=' + value)\n"
+                "        return eval(value)\n"
+                "    def audit(self):\n"
+                "        return 1\n",
+                encoding="utf-8",
+            )
+            result = analyze(directory)
+        self.assertIn("service.Service.run", {b["function"] for b in result["behaviors"]})
+        self.assertIn(
+            ("service.Service.run", "service.Service.audit"),
+            {(d["from"], d["to"]) for d in result["dependencies"]},
+        )
+        self.assertEqual(result["treatments"][0]["path"], "rewrite")
+        self.assertEqual({r["evidence"] for r in result["risks"]}, {"service.py:4", "service.py:5"})
+
+    def test_parent_relative_import_and_dotted_alias(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "pkg" / "sub").mkdir(parents=True)
+            (root / "pkg" / "utils.py").write_text(
+                "def helper():\n    return 1\n", encoding="utf-8"
+            )
+            (root / "pkg" / "sub" / "mod.py").write_text(
+                "from ..utils import helper\n"
+                "import os.path\n"
+                "import pkg.utils\n"
+                "def run():\n"
+                "    helper()\n"
+                "    os.path.join('a', 'b')\n"
+                "    pkg.utils.helper()\n",
+                encoding="utf-8",
+            )
+            result = analyze(root)
+        self.assertIn(
+            ("pkg.sub.mod", "pkg.utils", "local"),
+            {(d["from"], d["to"], d["kind"]) for d in result["dependencies"]},
+        )
+        self.assertIn(
+            ("pkg.sub.mod.run", "pkg.utils.helper"),
+            {(d["from"], d["to"]) for d in result["dependencies"]},
+        )
+        self.assertEqual(
+            sum(d["to"] == "pkg.utils.helper" for d in result["dependencies"]),
+            2,
+        )
+        self.assertEqual(
+            next(t["path"] for t in result["treatments"] if t["module"] == "pkg.sub.mod"),
+            "retain",
+        )
+
     def test_cli_writes_both_formats(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "out"

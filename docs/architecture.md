@@ -2,7 +2,7 @@
 
 The CLI (`legacy_accelerator/__main__.py`) accepts a Python file or directory and
 writes `assessment.json` and `report.md`. The analyzer parses each `.py` file into
-an AST without importing or executing it. It inspects top-level functions, imports,
+an AST without importing or executing it. It inspects functions and class methods, imports,
 local function calls, SQLite use, SQL construction, arithmetic, CSV generation,
 dynamic execution, and broad exception handling. Findings include relative file
 paths and line numbers. Sorting makes the inventory reproducible.
@@ -18,7 +18,7 @@ should validate behavior and sequence migrations using the dependency map.
 
 Function names are *inferred* behavior labels, not verified business requirements.
 Imports and resolved calls are static dependencies, not proof of runtime usage.
-The analyzer does not resolve reflection, class methods, indirect SQL variables,
+The analyzer does not resolve reflection, dynamic method dispatch, indirect SQL variables,
 conditional imports, framework routing, runtime configuration, or data flows.
 It does not evaluate performance, security posture, cloud suitability, or complete
 business intent. Validate all findings with characterization tests, operational
