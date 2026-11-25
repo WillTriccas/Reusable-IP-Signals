@@ -1,0 +1,1 @@
+"""Customer-neutral delivery factory."""

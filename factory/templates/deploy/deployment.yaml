@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: __SERVICE_SLUG__
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: __SERVICE_SLUG__
+  template:
+    metadata:
+      labels:
+        app: __SERVICE_SLUG__
+    spec:
+      securityContext:
+        runAsNonRoot: true
+      containers:
+        - name: service
+          image: __SERVICE_SLUG__:reviewed-tag
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000

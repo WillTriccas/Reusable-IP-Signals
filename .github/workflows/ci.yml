@@ -1,0 +1,13 @@
+name: Factory CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run workflow tests
+        run: python3 -m unittest discover -s tests -v
