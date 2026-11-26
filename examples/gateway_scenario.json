@@ -1,0 +1,28 @@
+{
+  "providers": {"mock_a": true, "mock_b": false},
+  "models": [
+    {"name": "model_a", "provider": "mock_a", "input_rate": 2, "output_rate": 3},
+    {"name": "model_b", "provider": "mock_b", "input_rate": 1, "output_rate": 2},
+    {"name": "pending_model", "provider": "mock_b", "input_rate": 1, "output_rate": 1}
+  ],
+  "principals": [
+    {"name": "developer", "roles": ["developer"], "budget_microcredits": 1000}
+  ],
+  "policy": {
+    "routes": {"code": ["model_a", "model_b"], "chat": ["model_b"], "experimental": ["pending_model"]},
+    "allowed_roles": ["developer"],
+    "sensitive_action": "redact",
+    "max_output_units": 10,
+    "rate_limit": 5,
+    "rate_window_seconds": 60
+  },
+  "actions": [
+    {"type": "approve", "model": "model_a", "approver": "reviewer"},
+    {"type": "approve", "model": "model_b", "approver": "reviewer"},
+    {"type": "request", "principal": "developer", "task": "code", "prompt": "Explain a loop for sample@example.com"},
+    {"type": "request", "principal": "developer", "task": "chat", "prompt": "Summarize a fictional project"},
+    {"type": "request", "principal": "developer", "task": "experimental", "prompt": "Try an unapproved model"},
+    {"type": "revoke", "principal": "developer"},
+    {"type": "request", "principal": "developer", "task": "chat", "prompt": "This request is denied"}
+  ]
+}
