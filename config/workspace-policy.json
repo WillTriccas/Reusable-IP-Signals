@@ -6,7 +6,21 @@
       "local-only",
       "governed-cloud",
       "ephemeral"
-    ]
+    ],
+    "group_stages": {
+      "standard": [
+        "local-only"
+      ],
+      "developer": [
+        "local-only",
+        "governed-cloud"
+      ],
+      "pilot": [
+        "local-only",
+        "governed-cloud",
+        "ephemeral"
+      ]
+    }
   },
   "workspaces": {
     "local": {

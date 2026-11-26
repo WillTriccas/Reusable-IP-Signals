@@ -28,7 +28,7 @@ The emitted event includes workspace, actor, event, outcome, and selected operat
 
 ## Configuration and integration
 
-Edit `config/workspace-policy.json` through the normal code-review process to change stages, workspace isolation or egress declarations, model eligibility, and telemetry options. Keep the default-deny egress and model policy explicit. `validate` checks the expected structure and security defaults.
+Edit `config/workspace-policy.json` through the normal code-review process to change stages, group-to-stage eligibility, workspace isolation or egress declarations, model eligibility, and telemetry options. Keep the default-deny egress and model policy explicit. `validate` checks the expected structure and security defaults. Model decisions include the policy version so gateway adapters can associate an audit event with the reviewed configuration.
 
 For a real deployment, connect the policy to adapters that:
 

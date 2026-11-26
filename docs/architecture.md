@@ -33,7 +33,7 @@ The sample policy has three ordered stages:
 2. **`governed-cloud`** — identity-verified cloud workspaces and approved model access for the pilot group and permitted data classifications.
 3. **`ephemeral`** — short-lived isolated sessions for approved agents or collaborators, with narrow task permissions and the same model gateway policy.
 
-Promotion between stages should be explicit and auditable, based on training, device or session posture, business approval, and monitoring readiness. Start at the least capable stage needed. Rollback or disablement should be available without rebuilding a workspace.
+The `group_stages` mapping configures which groups can enter each stage: `standard` is local-only, `developer` can use governed cloud, and `pilot` can use all three. Promotion between stages should be explicit and auditable, based on training, device or session posture, business approval, and monitoring readiness. Start at the least capable stage needed. Rollback or disablement should be available without rebuilding a workspace.
 
 ## Isolation and egress
 
