@@ -9,7 +9,11 @@ import uuid
 
 _IDENTIFIER = re.compile(r"^[A-Za-z0-9_.-]{1,64}$")
 _EMAIL = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")
-_SECRET = re.compile(r"\b(?:api[_-]?key|password|token)\s*[:=]\s*[^\s,;]+", re.I)
+_SECRET = re.compile(
+    r"""(?<!\w)["']?(?:api[_-]?key|password|token)\b["']?\s*[:=]\s*"""
+    r"""(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[^\s,;}\]]+)""",
+    re.I,
+)
 
 
 def _identifier(value):

@@ -100,6 +100,16 @@ class GatewayTests(unittest.TestCase):
         self.assertEqual(self.request("two words")["outcome"], "input_limit")
         self.assertFalse(self.a.received)
 
+    def test_quoted_secret_is_redacted_or_denied(self):
+        self.approve()
+        prompt = '{"' + "password" + '": "fictional value"}'
+        self.assertEqual(self.request(prompt)["outcome"], "allowed")
+        self.assertEqual(self.a.received, ["{[REDACTED_SECRET]}"])
+        self.gateway.policy = Policy({"code": ("a",)}, frozenset({"developer"}), sensitive_action="deny")
+        self.assertEqual(self.request(prompt)["outcome"], "sensitive_denied")
+        self.assertEqual(len(self.a.received), 1)
+        self.assertNotIn("fictional value", json.dumps(self.gateway.telemetry))
+
     def test_invalid_request_and_role_denied(self):
         self.approve()
         self.gateway.principals["dev"] = Principal("dev", frozenset({"viewer"}), 100)
