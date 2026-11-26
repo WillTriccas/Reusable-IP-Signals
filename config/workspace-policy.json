@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "enablement": {
+    "default_stage": "local-only",
+    "stages": [
+      "local-only",
+      "governed-cloud",
+      "ephemeral"
+    ]
+  },
+  "workspaces": {
+    "local": {
+      "isolation": "managed-device",
+      "network": {
+        "default": "deny",
+        "allow": []
+      }
+    },
+    "cloud": {
+      "isolation": "identity-bound-session",
+      "network": {
+        "default": "deny",
+        "allow": [
+          "approved-source-control",
+          "approved-artifact-service"
+        ]
+      }
+    },
+    "ephemeral": {
+      "isolation": "single-task-disposable",
+      "network": {
+        "default": "deny",
+        "allow": [
+          "approved-source-control"
+        ]
+      }
+    }
+  },
+  "model_policy": {
+    "default": "deny",
+    "models": [
+      {
+        "id": "general-assistant",
+        "stages": [
+          "governed-cloud",
+          "ephemeral"
+        ],
+        "groups": [
+          "pilot"
+        ],
+        "data_classifications": [
+          "public",
+          "internal"
+        ]
+      }
+    ]
+  },
+  "telemetry": {
+    "schema_version": "1.0",
+    "include_prompt_content": false,
+    "include_code_content": false
+  }
+}

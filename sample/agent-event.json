@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-01-15T10:30:00Z",
+  "workspace_id": "demo-workspace-01",
+  "workspace_type": "ephemeral",
+  "actor_type": "agent",
+  "event_type": "model_request",
+  "outcome": "allowed",
+  "duration_ms": 842,
+  "attributes": {
+    "model_id": "general-assistant",
+    "policy_reason": "approved",
+    "prompt": "This field is intentionally discarded."
+  }
+}
