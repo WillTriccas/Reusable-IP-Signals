@@ -35,7 +35,7 @@ class WorkspaceBlueprintTests(unittest.TestCase):
         )
         self.assertEqual(
             allowed,
-            {"allowed": True, "policy_version": 1, "reason": "approved"},
+            {"allowed": True, "policy_revision": "sample-v1", "reason": "approved"},
         )
 
         for request, reason in (
@@ -49,7 +49,11 @@ class WorkspaceBlueprintTests(unittest.TestCase):
                 result = authorize_model(self.config, *request)
                 self.assertEqual(
                     result,
-                    {"allowed": False, "policy_version": 1, "reason": reason},
+                    {
+                        "allowed": False,
+                        "policy_revision": "sample-v1",
+                        "reason": reason,
+                    },
                 )
 
     def test_policy_rejects_non_default_deny_egress(self):

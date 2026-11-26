@@ -26,6 +26,8 @@ def validate_config(config):
         or config["version"] != 1
     ):
         raise ValueError("configuration version must be 1")
+    if not isinstance(config.get("policy_revision"), str) or not config["policy_revision"]:
+        raise ValueError("policy_revision must identify the reviewed policy")
 
     enablement = config.get("enablement")
     if not isinstance(enablement, dict):
@@ -142,7 +144,7 @@ def authorize_model(config, stage, group, model_id, classification):
             reason = "approved"
     return {
         "allowed": reason == "approved",
-        "policy_version": config["version"],
+        "policy_revision": config["policy_revision"],
         "reason": reason,
     }
 
@@ -227,7 +229,11 @@ def main(argv=None):
     try:
         config = load_config(args.config)
         if args.command == "validate":
-            result = {"valid": True, "version": config["version"]}
+            result = {
+                "valid": True,
+                "policy_revision": config["policy_revision"],
+                "version": config["version"],
+            }
         elif args.command == "authorize":
             result = authorize_model(
                 config, args.stage, args.group, args.model, args.classification

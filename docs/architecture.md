@@ -45,7 +45,7 @@ These are policy inputs, not firewall rules. A deployment must implement and ver
 
 Route agent and developer model requests through a policy gateway. The sample policy uses an explicit model allowlist, permitted enablement stages, groups, and data classifications; requests not matching an entry are denied. A production gateway should additionally enforce per-user and per-model quotas, cost budgets, retention settings, approved tools, and a rapid revocation/kill switch.
 
-Record policy changes as reviewed, version-controlled configuration. Emit the policy version and decision reason to audit telemetry. Do not send secrets, restricted data, or prompts to a model unless a separately approved policy and gateway explicitly permit that use.
+Record policy changes as reviewed, version-controlled configuration and increment its policy revision. Emit that revision and the decision reason to audit telemetry. Do not send secrets, restricted data, or prompts to a model unless a separately approved policy and gateway explicitly permit that use.
 
 ## Normalized telemetry
 

@@ -1,5 +1,6 @@
 {
   "version": 1,
+  "policy_revision": "sample-v1",
   "enablement": {
     "default_stage": "local-only",
     "stages": [
