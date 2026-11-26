@@ -33,6 +33,16 @@ class GatewayTests(unittest.TestCase):
         self.assertEqual(self.request(task="unknown")["outcome"], "policy_denied")
         self.assertFalse(self.a.received)
 
+    def test_routes_to_either_provider(self):
+        self.approve()
+        self.assertEqual(self.request(task="code")["outcome"], "allowed")
+        self.assertEqual(self.request(task="chat")["outcome"], "allowed")
+        self.assertEqual(self.a.received, ["hello"])
+        self.assertEqual(self.b.received, ["hello"])
+        attempts = [event for event in self.gateway.telemetry if event["event"] == "provider_attempt"]
+        self.assertEqual([event["model"] for event in attempts], ["a", "b"])
+        self.assertEqual(self.gateway.spend["dev"], 12)
+
     def test_failover_filters_and_attributes_usage(self):
         self.approve()
         self.a.fail = True
